@@ -1,4 +1,4 @@
-# libply++
+# Plytapus
 C++ library for reading and writing PLY files.
 
 Supports ASCII and binary files.
