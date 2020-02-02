@@ -19,7 +19,7 @@
     #define Str(s) s
 #endif
 
-namespace libply
+namespace plytapus
 {
 	enum class Type
 	{

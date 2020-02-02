@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-namespace libply
+namespace plytapus
 {
 File::File(const PATH_STRING& filename)
 	: m_filename(filename),

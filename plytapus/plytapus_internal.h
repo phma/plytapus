@@ -3,7 +3,7 @@
 #include "plytapus.h"
 #include <sstream>
 
-namespace libply
+namespace plytapus
 {
 	typedef std::unordered_map<std::string, Type> TypeMap;
 	const TypeMap TYPE_MAP =

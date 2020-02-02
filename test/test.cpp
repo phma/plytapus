@@ -31,13 +31,13 @@ struct Mesh
 
 void readply(PATH_STRING filename, Mesh::VertexList& vertices, Mesh::TriangleIndicesList& triangles)
 {
-	libply::File file(filename);
+	plytapus::File file(filename);
 	const auto& definitions = file.definitions();
 
 	const auto vertexDefinition = definitions.at(0);
 	const size_t vertexCount = vertexDefinition.size;
 	vertices.reserve(vertexCount);
-	libply::ElementReadCallback vertexCallback = [&vertices](libply::ElementBuffer& e)
+	plytapus::ElementReadCallback vertexCallback = [&vertices](plytapus::ElementBuffer& e)
 		{
 			vertices.emplace_back(e[0], e[1], e[2]);
 		};
@@ -45,7 +45,7 @@ void readply(PATH_STRING filename, Mesh::VertexList& vertices, Mesh::TriangleInd
 	const auto triangleDefinition = definitions.at(1);
 	const size_t triangleCount = triangleDefinition.size;
 	triangles.reserve(triangleCount);
-	libply::ElementReadCallback triangleCallback = [&triangles](libply::ElementBuffer& e)
+	plytapus::ElementReadCallback triangleCallback = [&triangles](plytapus::ElementBuffer& e)
 	{
 		triangles.emplace_back(std::move(Mesh::TriangleIndices{ e[0], e[1], e[2]}));
 	};
@@ -55,19 +55,19 @@ void readply(PATH_STRING filename, Mesh::VertexList& vertices, Mesh::TriangleInd
 	file.read();
 }
 
-void writeply(PATH_STRING filename, const libply::ElementsDefinition& definitions, Mesh::VertexList& vertices, Mesh::TriangleIndicesList& triangles, libply::File::Format format)
+void writeply(PATH_STRING filename, const plytapus::ElementsDefinition& definitions, Mesh::VertexList& vertices, Mesh::TriangleIndicesList& triangles, plytapus::File::Format format)
 {
-	libply::FileOut file(filename, format);
+	plytapus::FileOut file(filename, format);
 	file.setElementsDefinition(definitions);
 	
-	libply::ElementWriteCallback vertexCallback = [&vertices](libply::ElementBuffer& e, size_t index)
+	plytapus::ElementWriteCallback vertexCallback = [&vertices](plytapus::ElementBuffer& e, size_t index)
 		{
 			const auto& v = vertices[index];
 			e[0] = v.x;
 			e[1] = v.y;
 			e[2] = v.z;
 		};
-	libply::ElementWriteCallback triangleCallback = [&triangles](libply::ElementBuffer& e, size_t index)
+	plytapus::ElementWriteCallback triangleCallback = [&triangles](plytapus::ElementBuffer& e, size_t index)
 		{
 			e.reset(3);
 			const auto& t = triangles[index];
@@ -134,9 +134,9 @@ int main()
 	compare_vertices(ascii_vertices, bin_vertices);
 	compare_triangles(ascii_triangles, bin_triangles);
 
-	libply::File refFile(Str("test.ply"));
-	writeply(Str("write_ascii.ply"), refFile.definitions(), ascii_vertices, ascii_triangles, libply::File::Format::ASCII);
-	writeply(Str("write_bin.ply"), refFile.definitions(), ascii_vertices, ascii_triangles, libply::File::Format::BINARY_LITTLE_ENDIAN);
+	plytapus::File refFile(Str("test.ply"));
+	writeply(Str("write_ascii.ply"), refFile.definitions(), ascii_vertices, ascii_triangles, plytapus::File::Format::ASCII);
+	writeply(Str("write_bin.ply"), refFile.definitions(), ascii_vertices, ascii_triangles, plytapus::File::Format::BINARY_LITTLE_ENDIAN);
 
 	Mesh::VertexList readback_ascii_vertices;
 	Mesh::TriangleIndicesList readback_ascii_triangles;
