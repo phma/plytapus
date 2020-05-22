@@ -137,6 +137,7 @@ int main()
 	plytapus::File refFile(Str("test.ply"));
 	writeply(Str("write_ascii.ply"), refFile.definitions(), ascii_vertices, ascii_triangles, plytapus::File::Format::ASCII);
 	writeply(Str("write_bin.ply"), refFile.definitions(), ascii_vertices, ascii_triangles, plytapus::File::Format::BINARY_LITTLE_ENDIAN);
+	writeply(Str("write_binbe.ply"), refFile.definitions(), ascii_vertices, ascii_triangles, plytapus::File::Format::BINARY_BIG_ENDIAN);
 
 	Mesh::VertexList readback_ascii_vertices;
 	Mesh::TriangleIndicesList readback_ascii_triangles;
