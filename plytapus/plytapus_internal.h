@@ -5,6 +5,8 @@
 
 namespace plytapus
 {
+  std::string ldecimal(double x,double toler=0);
+  std::string ldecimal(float x,float toler=0);
 	typedef std::unordered_map<std::string, Type> TypeMap;
 	const TypeMap TYPE_MAP =
 	{
@@ -103,13 +105,13 @@ namespace plytapus
 
 	inline std::stringstream& write_convert_FLOAT(IScalarProperty& property, std::stringstream& ss)
 	{
-		ss << static_cast<float>(property);
+		ss << ldecimal(static_cast<float>(property));
 		return ss;
 	}
 
 	inline std::stringstream& write_convert_DOUBLE(IScalarProperty& property, std::stringstream& ss)
 	{
-		ss << static_cast<double>(property);
+		ss << ldecimal(static_cast<double>(property));
 		return ss;
 	}
 
