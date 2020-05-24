@@ -2,6 +2,8 @@
 
 #include "plytapus.h"
 
+#define PHI 1.6180339887498948482
+
 bool areClose(double a, double b)
 {
 	const double EPSILON = 1.0e-1;
@@ -121,6 +123,36 @@ bool compare_triangles(const Mesh::TriangleIndicesList& left, const Mesh::Triang
 	return errors == 0;
 }
 
+void drawIcosahedron()
+{
+  Mesh::VertexList icosaVertices;
+  Mesh::TriangleIndicesList icosaTriangles;
+  std::vector<plytapus::Property> vertexProperties,faceProperties;
+  vertexProperties.push_back(plytapus::Property("x",plytapus::Type::DOUBLE,false));
+  vertexProperties.push_back(plytapus::Property("y",plytapus::Type::DOUBLE,false));
+  vertexProperties.push_back(plytapus::Property("z",plytapus::Type::DOUBLE,false));
+  faceProperties.push_back(plytapus::Property("vertex_index",plytapus::Type::INT,true));
+  plytapus::Element vertexElement("vertex",12,vertexProperties);
+  plytapus::Element faceElement("face",0,faceProperties);
+  plytapus::ElementsDefinition elements;
+  elements.push_back(vertexElement);
+  elements.push_back(faceElement);
+
+  icosaVertices.emplace_back(0,1,PHI);
+  icosaVertices.emplace_back(0,1,-PHI);
+  icosaVertices.emplace_back(0,-1,-PHI);
+  icosaVertices.emplace_back(0,-1,PHI);
+  icosaVertices.emplace_back(1,PHI,0);
+  icosaVertices.emplace_back(1,-PHI,0);
+  icosaVertices.emplace_back(-1,-PHI,0);
+  icosaVertices.emplace_back(-1,PHI,0);
+  icosaVertices.emplace_back(PHI,0,1);
+  icosaVertices.emplace_back(-PHI,0,1);
+  icosaVertices.emplace_back(-PHI,0,-1);
+  icosaVertices.emplace_back(PHI,0,-1);
+  writeply(Str("icosahedron.ply"),elements,icosaVertices,icosaTriangles,plytapus::File::Format::BINARY_LITTLE_ENDIAN);
+}
+
 int main()
 {
 	Mesh::VertexList ascii_vertices;
@@ -150,5 +182,7 @@ int main()
 	readply(Str("write_bin.ply"), readback_bin_vertices, readback_bin_triangles);
 	compare_vertices(bin_vertices, readback_bin_vertices);
 	compare_triangles(bin_triangles, readback_bin_triangles);
+
+	drawIcosahedron();
 	std::cout << "Finished" << std::endl;
 }
