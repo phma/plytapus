@@ -223,7 +223,7 @@ namespace plytapus
 	private:
 		void readHeader();
 		void parseLine(const textio::SubString& substr, const ElementDefinition& elementDefinition, ElementBuffer& buffer);
-		void readBinaryElement(std::ifstream& fs, const ElementDefinition& elementDefinition, ElementBuffer& buffer);
+		void readBinaryElement(std::ifstream& fs, const ElementDefinition& elementDefinition, ElementBuffer& buffer, File::Format format);
 
 	private:
 		typedef std::map<std::string, ElementReadCallback> CallbackMap;

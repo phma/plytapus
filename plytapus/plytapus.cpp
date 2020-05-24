@@ -396,7 +396,7 @@ void FileParser::read()
 			parseLine(line, elementDefinition, *buffer);
 		}
 		else {
-			readBinaryElement(filestream, elementDefinition, *buffer);
+			readBinaryElement(filestream, elementDefinition, *buffer, m_format);
 		}
 		
 		readCallback(*buffer);
@@ -428,7 +428,7 @@ void FileParser::parseLine(const textio::SubString& line, const ElementDefinitio
 	}
 }
 
-void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& elementDefinition, ElementBuffer& elementBuffer)
+void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& elementDefinition, ElementBuffer& elementBuffer, File::Format format)
 {
 	const auto& properties = elementDefinition.properties;
 	const unsigned int MAX_PROPERTY_SIZE = 8;
