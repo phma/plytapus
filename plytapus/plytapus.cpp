@@ -224,6 +224,13 @@ void readEndian(std::ifstream &fs,char *buffer,int size,File::Format format)
     endianflip(buffer,size);
 }
 
+void writeEndian(std::ofstream &fs,char *buffer,int size,File::Format format)
+{
+  if (format!=File::Format::NATIVE_ENDIAN)
+    endianflip(buffer,size);
+  fs.write(buffer,size);
+}
+
 File::File(const PATH_STRING& filename)
 	: m_filename(filename),
 	m_parser(std::make_unique<FileParser>(filename))
@@ -621,7 +628,7 @@ void writeTextProperties(std::ofstream& file, ElementBuffer& buffer, const Eleme
 	file << '\n';
 }
 
-void writeBinaryProperties(std::ofstream& file, ElementBuffer& buffer, const ElementDefinition& elementDefinition)
+void writeBinaryProperties(std::ofstream& file, ElementBuffer& buffer, const ElementDefinition& elementDefinition, File::Format format)
 {
 	const unsigned int MAX_PROPERTY_SIZE = 8;
 	char write_buffer[MAX_PROPERTY_SIZE];
@@ -629,14 +636,14 @@ void writeBinaryProperties(std::ofstream& file, ElementBuffer& buffer, const Ele
 	if (elementDefinition.properties.front().isList)
 	{
 		unsigned char list_size = static_cast<unsigned char>(buffer.size());
-		file.write(reinterpret_cast<char*>(&list_size), sizeof(list_size));
+		writeEndian(file, reinterpret_cast<char*>(&list_size), sizeof(list_size), format);
 
 		auto& cast = elementDefinition.properties.front().writeCastFunction;
 		for (size_t i = 0; i < buffer.size(); ++i)
 		{
 			size_t write_size;
 			cast(buffer[i], write_buffer, write_size);
-			file.write(reinterpret_cast<char*>(write_buffer), write_size);
+			writeEndian(file, reinterpret_cast<char*>(write_buffer), write_size, format);
 		}
 	}
 	else
@@ -646,7 +653,7 @@ void writeBinaryProperties(std::ofstream& file, ElementBuffer& buffer, const Ele
 			auto& cast = elementDefinition.properties.at(i).writeCastFunction;
 			size_t write_size;
 			cast(buffer[i], write_buffer, write_size);
-			file.write(reinterpret_cast<char*>(write_buffer), write_size);
+			writeEndian(file, reinterpret_cast<char*>(write_buffer), write_size, format);
 		}
 	}
 }
@@ -660,7 +667,7 @@ void writeProperties(std::ofstream& file, ElementBuffer& buffer, size_t index, c
 	}
 	else
 	{
-		writeBinaryProperties(file, buffer, elementDefinition);
+		writeBinaryProperties(file, buffer, elementDefinition, format);
 	}
 }
 
