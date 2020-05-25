@@ -1,3 +1,11 @@
+# v0.6.0
+- Add a shared library.
+- Read and write big- and little-endian files.
+- Copy test data to build directory (build directory does not have to be inside source directory).
+- Install header files and library.
+- Write an icosahedron.
+- Rename to Plytapus.
+
 # v0.5.0 (2019-02-26)
 - Add support for Linux.
 - Requires C++14.
