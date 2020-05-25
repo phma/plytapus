@@ -206,6 +206,24 @@ std::string ldecimal(float x,float toler)
   return ret;
 }
 
+void endianflip(char *addr,int n)
+{
+  int i;
+  for (i=0;i<n/2;i++)
+  {
+    addr[i]^=addr[n-1-i];
+    addr[n-1-i]^=addr[i];
+    addr[i]^=addr[n-1-i];
+  }
+}
+
+void readEndian(std::ifstream &fs,char *buffer,int size,File::Format format)
+{
+  fs.read(buffer,size);
+  if (format!=File::Format::NATIVE_ENDIAN)
+    endianflip(buffer,size);
+}
+
 File::File(const PATH_STRING& filename)
 	: m_filename(filename),
 	m_parser(std::make_unique<FileParser>(filename))
@@ -446,7 +464,7 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
 			const auto size = TYPE_SIZE_MAP.at(properties[i].type);
-			fs.read(buffer, size);
+			readEndian(fs, buffer, size, format);
 			properties[i].castFunction(buffer, elementBuffer[i]);
 		}
 	}
@@ -454,7 +472,7 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 	{
 		const auto lengthType = properties[0].listLengthType;
 		const auto lengthTypeSize = TYPE_SIZE_MAP.at(lengthType);
-		fs.read(buffer, lengthTypeSize);
+		readEndian(fs, buffer, lengthTypeSize, format);
 		size_t length = static_cast<size_t>(*buffer);
 		elementBuffer.reset(length);
 
@@ -462,7 +480,7 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 		const auto size = TYPE_SIZE_MAP.at(properties[0].type);
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
-			fs.read(buffer, size);
+			readEndian(fs, buffer, size, format);
 			castFunction(buffer, elementBuffer[i]);
 		}
 	}
