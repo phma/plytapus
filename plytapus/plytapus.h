@@ -11,7 +11,7 @@
 
 #include "textio.h"
 
-#ifdef _WIN32
+#ifdef _MSC_VER
     #define PATH_STRING std::wstring
     #define Str(s) L##s
 #else
