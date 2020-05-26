@@ -123,7 +123,17 @@ bool compare_triangles(const Mesh::TriangleIndicesList& left, const Mesh::Triang
 	return errors == 0;
 }
 
+void addTriangle(Mesh::TriangleIndicesList &tris,int a,int b,int c)
+{
+  Mesh::TriangleIndices tri;
+  tri[0]=a;
+  tri[1]=b;
+  tri[2]=c;
+  tris.push_back(tri);
+}
+
 void drawIcosahedron()
+// This is an example of how to make a mesh from scratch.
 {
   Mesh::VertexList icosaVertices;
   Mesh::TriangleIndicesList icosaTriangles;
@@ -133,7 +143,7 @@ void drawIcosahedron()
   vertexProperties.push_back(plytapus::Property("z",plytapus::Type::DOUBLE,false));
   faceProperties.push_back(plytapus::Property("vertex_index",plytapus::Type::INT,true));
   plytapus::Element vertexElement("vertex",12,vertexProperties);
-  plytapus::Element faceElement("face",0,faceProperties);
+  plytapus::Element faceElement("face",20,faceProperties);
   plytapus::ElementsDefinition elements;
   elements.push_back(vertexElement);
   elements.push_back(faceElement);
@@ -150,6 +160,31 @@ void drawIcosahedron()
   icosaVertices.emplace_back(-PHI,0,1);
   icosaVertices.emplace_back(-PHI,0,-1);
   icosaVertices.emplace_back(PHI,0,-1);
+
+  addTriangle(icosaTriangles,0,3,8);
+  addTriangle(icosaTriangles,3,0,9);
+  addTriangle(icosaTriangles,2,1,11);
+  addTriangle(icosaTriangles,1,2,10);
+
+  addTriangle(icosaTriangles,4,7,0);
+  addTriangle(icosaTriangles,7,4,1);
+  addTriangle(icosaTriangles,6,5,3);
+  addTriangle(icosaTriangles,5,6,2);
+
+  addTriangle(icosaTriangles,8,11,4);
+  addTriangle(icosaTriangles,11,8,5);
+  addTriangle(icosaTriangles,10,9,7);
+  addTriangle(icosaTriangles,9,10,6);
+
+  addTriangle(icosaTriangles,0,8,4);
+  addTriangle(icosaTriangles,1,4,11);
+  addTriangle(icosaTriangles,3,5,8);
+  addTriangle(icosaTriangles,2,11,5);
+  addTriangle(icosaTriangles,0,7,9);
+  addTriangle(icosaTriangles,1,10,7);
+  addTriangle(icosaTriangles,3,9,6);
+  addTriangle(icosaTriangles,2,6,10);
+
   writeply(Str("icosahedron.ply"),elements,icosaVertices,icosaTriangles,plytapus::File::Format::BINARY_LITTLE_ENDIAN);
 }
 
