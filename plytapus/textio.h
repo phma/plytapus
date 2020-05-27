@@ -316,7 +316,7 @@ namespace textio
 		SubString::const_iterator eol = findSIMD(m_begin, m_end, '\n');
 		if (m_begin == m_workBuf.cbegin() && eol == m_end)
 		{
-			std::runtime_error("Working buffer too small to fit single line.");
+			throw std::runtime_error("Working buffer too small to fit single line.");
 		}
 		SubString lineSubstring(m_begin, eol);
 
