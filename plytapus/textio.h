@@ -73,6 +73,7 @@ namespace textio
 		std::streamsize m_workBufFileEndPosition;
 		WorkBuffer m_workBuf;
 		bool m_eof;
+		int endOfLine; // 0x0d, 0x0a, or 0x0d0a
 
 		WorkBuffer::const_iterator m_begin;
 		WorkBuffer::const_iterator m_end;
