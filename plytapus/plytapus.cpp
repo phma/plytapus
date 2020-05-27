@@ -444,7 +444,7 @@ void FileParser::parseLine(const textio::SubString& line, const ElementDefinitio
 	m_lineTokenizer.tokenize(line, m_tokens);
 	const auto& properties = elementDefinition.properties;
 
-	if (!properties.front().isList)
+	if (properties.size()==0 || !properties.front().isList)
 	{
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
