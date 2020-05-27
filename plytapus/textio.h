@@ -222,6 +222,7 @@ namespace textio
 		switch (delimiter)
 		{
 			case '\n': pattern = 0x0a0a0a0a0a0a0a0aULL; break;
+			case '\r': pattern = 0x0d0d0d0d0d0d0d0dULL; break;
 			case ' ': pattern = 0x2020202020202020ULL; break;
 			default: throw std::runtime_error("Unsupported delimiter.");
 		}
