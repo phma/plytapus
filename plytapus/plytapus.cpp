@@ -471,7 +471,7 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 	const unsigned int MAX_PROPERTY_SIZE = 8;
 	char buffer[MAX_PROPERTY_SIZE];
 
-	if (!properties.front().isList)
+	if (properties.size()==0 || !properties.front().isList)
 	{
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
