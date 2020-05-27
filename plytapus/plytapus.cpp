@@ -318,6 +318,7 @@ std::vector<Element> FileParser::definitions() const
 
 void FileParser::readHeader()
 {
+	m_lineReader.setEndOfLine();
 	// Read PLY magic number.
 	std::string line = m_lineReader.getline();
 	if (line != "ply")
