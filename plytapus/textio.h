@@ -147,7 +147,8 @@ namespace textio
 		auto p = substr.begin();
 		auto end = substr.end();
 		T integer = 0;
-		assert(*p != '-');
+		if (*p == '-')
+		  throw std::runtime_error("Parsing unsigned number, found sign.");
 		while (p != end && *p >= '0' && *p <= '9')
 		{
 			integer = (integer * 10) + (*p - '0');
