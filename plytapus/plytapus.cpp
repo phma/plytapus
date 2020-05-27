@@ -460,7 +460,9 @@ void FileParser::parseLine(const textio::SubString& line, const ElementDefinitio
 		elementBuffer.reset(listLength);
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
-			conversionFunction(m_tokens[i+1], elementBuffer[i]);
+		  if (m_tokens.size()<=i+1)
+		    throw std::runtime_error("Line has too few tokens.");
+		  conversionFunction(m_tokens[i+1], elementBuffer[i]);
 		}
 	}
 }
