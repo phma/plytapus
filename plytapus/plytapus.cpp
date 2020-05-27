@@ -360,7 +360,10 @@ void FileParser::readHeader()
 		}
 		else if (lineType == "property")
 		{
-			addProperty(tokens, m_elements.back());
+		  if (m_elements.size())
+		    addProperty(tokens, m_elements.back());
+		  else
+		    throw std::runtime_error("Property with no preceding element.");
 		}
 		else
 		{
