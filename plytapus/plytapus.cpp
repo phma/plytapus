@@ -365,6 +365,9 @@ void FileParser::readHeader()
 		  else
 		    throw std::runtime_error("Property with no preceding element.");
 		}
+		else if (lineType == "comment")
+		{
+		}
 		else
 		{
 			throw std::runtime_error("Invalid header line.");
