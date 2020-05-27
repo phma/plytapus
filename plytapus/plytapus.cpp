@@ -448,7 +448,9 @@ void FileParser::parseLine(const textio::SubString& line, const ElementDefinitio
 	{
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
-			properties[i].conversionFunction(m_tokens[i], elementBuffer[i]);
+		  if (m_tokens.size()<=i)
+		    throw std::runtime_error("Line has too few tokens.");
+		  properties[i].conversionFunction(m_tokens[i], elementBuffer[i]);
 		}
 	}
 	else
