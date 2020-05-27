@@ -456,6 +456,8 @@ void FileParser::parseLine(const textio::SubString& line, const ElementDefinitio
 	else
 	{
 		const auto& conversionFunction = properties[0].conversionFunction;
+		if (m_tokens.size()==0)
+		  throw std::runtime_error("Empty list line.");
 		size_t listLength = std::stoi(m_tokens[0]);
 		elementBuffer.reset(listLength);
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
