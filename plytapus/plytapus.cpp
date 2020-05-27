@@ -367,7 +367,7 @@ void FileParser::readHeader()
 		}
 		else
 		{
-			//throw std::runtime_error("Invalid header line.");
+			throw std::runtime_error("Invalid header line.");
 		}
 
 		line_substring = m_lineReader.getline();
