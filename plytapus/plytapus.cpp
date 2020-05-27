@@ -488,8 +488,8 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 	{
 		const auto lengthType = properties[0].listLengthType;
 		const auto lengthTypeSize = TYPE_SIZE_MAP.at(lengthType);
-		readEndian(fs, buffer, lengthTypeSize, format);
-		size_t length = static_cast<size_t>(*buffer);
+		readEndian(fs, buffer, lengthTypeSize, format); // TODO handle lengthTypeSize>1
+		size_t length = static_cast<size_t>(*(unsigned char *)buffer);
 		elementBuffer.reset(length);
 
 		const auto& castFunction = properties[0].castFunction;
