@@ -57,6 +57,7 @@ namespace textio
 		inline bool eof() const { return m_eof; };
 		inline std::ifstream& filestream() { return m_file; };
 		inline std::streamsize position(const std::string::const_iterator& workbuf_iter);
+		inline void setEndOfLine();
 
 	private:
 		//inline void readFileChunk(std::streamoff offset = 0);
@@ -347,5 +348,23 @@ namespace textio
 	std::streamsize LineReader::position(const std::string::const_iterator& workbuf_iter)
 	{
 		return m_workBufFileEndPosition - (m_end - workbuf_iter);
+	}
+
+	void LineReader::setEndOfLine()
+	/* Reads the first eight bytes of the file, which consist of "ply",
+	 * a line end, and the start of "comment" or "element", and extracts
+	 * the line end.
+	 */
+	{
+	  int i;
+	  char buf[8];
+	  endOfLine=0;
+	  m_file.read(buf,8);
+	  m_file.seekg(0,std::ios::beg);
+	  for (i=0;i<8;i++)
+	    if (buf[i]<32)
+	      endOfLine=256*endOfLine+buf[i];
+	  if (endOfLine!=0x0d && endOfLine!=0x0a && endOfLine!=0x0a0d && endOfLine!=0x0d0a)
+	    endOfLine=0x0a; // Not a PLY file. Set it to LF and it'll be rejected later.
 	}
 }
