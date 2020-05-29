@@ -16,6 +16,8 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND NOT MSVC_STATIC)
   set(MAKE_STATIC "")
 endif ()
 
+option(MSVC_FILENAME_16 "Use UTF-16 filenames in MSVC")
+
 file(GLOB LIB_SOURCES "plytapus/*.cpp")
 file(GLOB TEST_SOURCES "test/*.cpp")
 

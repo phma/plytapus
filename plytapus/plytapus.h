@@ -11,7 +11,7 @@
 
 #include "textio.h"
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && defined(MSVC_FILENAME_16)
     #define PATH_STRING std::wstring
     #define Str(s) L##s
 #else

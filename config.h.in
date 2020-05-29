@@ -1,5 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 #cmakedefine BIGENDIAN
+#cmakedefine MSVC_FILENAME_16
 #define VERSION "@PLYTAPUS_VERSION@"
 #endif
