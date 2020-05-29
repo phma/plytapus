@@ -364,13 +364,10 @@ namespace textio
 	 */
 	{
 	  int i;
-	  char buf[8];
 	  endOfLine=0;
-	  m_file.read(buf,8);
-	  m_file.seekg(0,std::ios::beg);
 	  for (i=0;i<8;i++)
-	    if (buf[i]<32)
-	      endOfLine=256*endOfLine+buf[i];
+	    if (m_workBuf[i]<32)
+	      endOfLine=256*endOfLine+m_workBuf[i];
 	  if (endOfLine!=0x0d && endOfLine!=0x0a && endOfLine!=0x0a0d && endOfLine!=0x0d0a)
 	    endOfLine=0x0a; // Not a PLY file. Set it to LF and it'll be rejected later.
 	}
