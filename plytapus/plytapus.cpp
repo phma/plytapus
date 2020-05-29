@@ -478,6 +478,7 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 	const auto& properties = elementDefinition.properties;
 	const unsigned int MAX_PROPERTY_SIZE = 8;
 	char buffer[MAX_PROPERTY_SIZE];
+	ScalarProperty<size_t> lengthProp;
 
 	if (properties.size()==0 || !properties.front().isList)
 	{
@@ -492,8 +493,9 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 	{
 		const auto lengthType = properties[0].listLengthType;
 		const auto lengthTypeSize = TYPE_SIZE_MAP.at(lengthType);
-		readEndian(fs, buffer, lengthTypeSize, format); // TODO handle lengthTypeSize>1
-		size_t length = static_cast<size_t>(*(unsigned char *)buffer);
+		readEndian(fs, buffer, lengthTypeSize, format);
+		CAST_MAP.at(lengthType)(buffer,lengthProp);
+		size_t length=lengthProp.value();
 		elementBuffer.reset(length);
 
 		const auto& castFunction = properties[0].castFunction;
