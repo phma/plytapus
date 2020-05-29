@@ -6,6 +6,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(TestBigEndian)
 
+option(MSVC_STATIC "Build static library in MSVC")
+set(MAKE_STATIC plytapus0)
+set(MAKE_SHARED plytapus1)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND MSVC_STATIC)
+  set(MAKE_SHARED "")
+endif ()
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC" AND NOT MSVC_STATIC)
+  set(MAKE_STATIC "")
+endif ()
+
 file(GLOB LIB_SOURCES "plytapus/*.cpp")
 file(GLOB TEST_SOURCES "test/*.cpp")
 
@@ -16,13 +26,23 @@ set(PLYTAPUS_VERSION ${PLYTAPUS_MAJOR_VERSION}.${PLYTAPUS_MINOR_VERSION}.${PLYTA
 
 include_directories("plytapus")
 
+if (MAKE_STATIC)
 add_library(plytapus0 STATIC ${LIB_SOURCES})
+endif ()
+if (MAKE_SHARED)
 add_library(plytapus1 SHARED ${LIB_SOURCES})
+endif ()
 add_executable(plytapus_test ${TEST_SOURCES})
+if (MAKE_STATIC)
 target_link_libraries(plytapus_test plytapus0)
 set_target_properties(plytapus0 PROPERTIES OUTPUT_NAME "plytapus" VERSION ${PLYTAPUS_VERSION})
+else ()
+target_link_libraries(plytapus_test plytapus1)
+endif ()
+if (MAKE_SHARED)
 set_target_properties(plytapus1 PROPERTIES OUTPUT_NAME "plytapus" VERSION ${PLYTAPUS_VERSION})
-install(TARGETS plytapus0 plytapus1 DESTINATION lib)
+endif ()
+install(TARGETS ${MAKE_SHARED} ${MAKE_STATIC} DESTINATION lib)
 install(FILES plytapus/plytapus.h plytapus/textio.h DESTINATION include)
 
 include_directories(${PROJECT_BINARY_DIR})
