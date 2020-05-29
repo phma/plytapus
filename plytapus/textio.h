@@ -25,6 +25,11 @@ namespace textio
 		const_iterator begin() const { return m_begin; };
 		const_iterator end() const { return m_end; };
 
+		void skipEol2()
+		{ // Line ends with CRLF, m_end points to LF. Point it to CR.
+		  --m_end;
+		}
+
 	private:
 		const_iterator m_begin;
 		const_iterator m_end;
@@ -315,7 +320,7 @@ namespace textio
 
 	SubString LineReader::findLine()
 	{
-		SubString::const_iterator eol = findSIMD(m_begin, m_end, '\n');
+		SubString::const_iterator eol = findSIMD(m_begin, m_end, endOfLine&255);
 		if (m_begin == m_workBuf.cbegin() && eol == m_end)
 		{
 			throw std::runtime_error("Working buffer too small to fit single line.");
@@ -342,6 +347,8 @@ namespace textio
 			// Set begin pointer to the first character after the newline delimiter.
 			m_begin = eol + 1;
 		}
+		if (endOfLine>255)
+		  lineSubstring.skipEol2();
 		return lineSubstring;
 	}
 
