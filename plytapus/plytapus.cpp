@@ -318,6 +318,7 @@ std::vector<Element> FileParser::definitions() const
 
 void FileParser::readHeader()
 {
+	m_lineReader.setEndOfLine();
 	// Read PLY magic number.
 	std::string line = m_lineReader.getline();
 	if (line != "ply")
@@ -360,11 +361,17 @@ void FileParser::readHeader()
 		}
 		else if (lineType == "property")
 		{
-			addProperty(tokens, m_elements.back());
+		  if (m_elements.size())
+		    addProperty(tokens, m_elements.back());
+		  else
+		    throw std::runtime_error("Property with no preceding element.");
+		}
+		else if (lineType == "comment")
+		{
 		}
 		else
 		{
-			//throw std::runtime_error("Invalid header line.");
+			throw std::runtime_error("Invalid header line.");
 		}
 
 		line_substring = m_lineReader.getline();
@@ -441,21 +448,27 @@ void FileParser::parseLine(const textio::SubString& line, const ElementDefinitio
 	m_lineTokenizer.tokenize(line, m_tokens);
 	const auto& properties = elementDefinition.properties;
 
-	if (!properties.front().isList)
+	if (properties.size()==0 || !properties.front().isList)
 	{
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
-			properties[i].conversionFunction(m_tokens[i], elementBuffer[i]);
+		  if (m_tokens.size()<=i)
+		    throw std::runtime_error("Line has too few tokens.");
+		  properties[i].conversionFunction(m_tokens[i], elementBuffer[i]);
 		}
 	}
 	else
 	{
 		const auto& conversionFunction = properties[0].conversionFunction;
+		if (m_tokens.size()==0)
+		  throw std::runtime_error("Empty list line.");
 		size_t listLength = std::stoi(m_tokens[0]);
 		elementBuffer.reset(listLength);
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
-			conversionFunction(m_tokens[i+1], elementBuffer[i]);
+		  if (m_tokens.size()<=i+1)
+		    throw std::runtime_error("Line has too few tokens.");
+		  conversionFunction(m_tokens[i+1], elementBuffer[i]);
 		}
 	}
 }
@@ -465,8 +478,9 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 	const auto& properties = elementDefinition.properties;
 	const unsigned int MAX_PROPERTY_SIZE = 8;
 	char buffer[MAX_PROPERTY_SIZE];
+	ScalarProperty<size_t> lengthProp;
 
-	if (!properties.front().isList)
+	if (properties.size()==0 || !properties.front().isList)
 	{
 		for (size_t i = 0; i < elementBuffer.size(); ++i)
 		{
@@ -474,13 +488,18 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 			readEndian(fs, buffer, size, format);
 			properties[i].castFunction(buffer, elementBuffer[i]);
 		}
+		if (elementBuffer.size()==0)
+		// A garbled number of elements, where the element has no properties,
+		// can result in the program taking a long time without reaching EOF.
+		  throw std::runtime_error("Empty element.");
 	}
 	else
 	{
 		const auto lengthType = properties[0].listLengthType;
 		const auto lengthTypeSize = TYPE_SIZE_MAP.at(lengthType);
 		readEndian(fs, buffer, lengthTypeSize, format);
-		size_t length = static_cast<size_t>(*buffer);
+		CAST_MAP.at(lengthType)(buffer,lengthProp);
+		size_t length=lengthProp.value();
 		elementBuffer.reset(length);
 
 		const auto& castFunction = properties[0].castFunction;
@@ -491,6 +510,8 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 			castFunction(buffer, elementBuffer[i]);
 		}
 	}
+	if (fs.eof())
+	  throw std::runtime_error("End of file.");
 }
 
 ElementBuffer::ElementBuffer(const ElementDefinition& definition)

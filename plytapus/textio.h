@@ -25,6 +25,11 @@ namespace textio
 		const_iterator begin() const { return m_begin; };
 		const_iterator end() const { return m_end; };
 
+		void skipEol2()
+		{ // Line ends with CRLF, m_end points to LF. Point it to CR.
+		  --m_end;
+		}
+
 	private:
 		const_iterator m_begin;
 		const_iterator m_end;
@@ -57,6 +62,7 @@ namespace textio
 		inline bool eof() const { return m_eof; };
 		inline std::ifstream& filestream() { return m_file; };
 		inline std::streamsize position(const std::string::const_iterator& workbuf_iter);
+		inline void setEndOfLine();
 
 	private:
 		//inline void readFileChunk(std::streamoff offset = 0);
@@ -73,6 +79,7 @@ namespace textio
 		std::streamsize m_workBufFileEndPosition;
 		WorkBuffer m_workBuf;
 		bool m_eof;
+		int endOfLine; // 0x0d, 0x0a, or 0x0d0a
 
 		WorkBuffer::const_iterator m_begin;
 		WorkBuffer::const_iterator m_end;
@@ -147,7 +154,8 @@ namespace textio
 		auto p = substr.begin();
 		auto end = substr.end();
 		T integer = 0;
-		assert(*p != '-');
+		if (*p == '-')
+		  throw std::runtime_error("Parsing unsigned number, found sign.");
 		while (p != end && *p >= '0' && *p <= '9')
 		{
 			integer = (integer * 10) + (*p - '0');
@@ -222,6 +230,7 @@ namespace textio
 		switch (delimiter)
 		{
 			case '\n': pattern = 0x0a0a0a0a0a0a0a0aULL; break;
+			case '\r': pattern = 0x0d0d0d0d0d0d0d0dULL; break;
 			case ' ': pattern = 0x2020202020202020ULL; break;
 			default: throw std::runtime_error("Unsupported delimiter.");
 		}
@@ -311,10 +320,10 @@ namespace textio
 
 	SubString LineReader::findLine()
 	{
-		SubString::const_iterator eol = findSIMD(m_begin, m_end, '\n');
+		SubString::const_iterator eol = findSIMD(m_begin, m_end, endOfLine&255);
 		if (m_begin == m_workBuf.cbegin() && eol == m_end)
 		{
-			std::runtime_error("Working buffer too small to fit single line.");
+			throw std::runtime_error("Working buffer too small to fit single line.");
 		}
 		SubString lineSubstring(m_begin, eol);
 
@@ -338,11 +347,28 @@ namespace textio
 			// Set begin pointer to the first character after the newline delimiter.
 			m_begin = eol + 1;
 		}
+		if (endOfLine>255)
+		  lineSubstring.skipEol2();
 		return lineSubstring;
 	}
 
 	std::streamsize LineReader::position(const std::string::const_iterator& workbuf_iter)
 	{
 		return m_workBufFileEndPosition - (m_end - workbuf_iter);
+	}
+
+	void LineReader::setEndOfLine()
+	/* Reads the first eight bytes of the file, which consist of "ply",
+	 * a line end, and the start of "comment" or "element", and extracts
+	 * the line end.
+	 */
+	{
+	  int i;
+	  endOfLine=0;
+	  for (i=0;i<8;i++)
+	    if (m_workBuf[i]<32)
+	      endOfLine=256*endOfLine+m_workBuf[i];
+	  if (endOfLine!=0x0d && endOfLine!=0x0a && endOfLine!=0x0a0d && endOfLine!=0x0d0a)
+	    endOfLine=0x0a; // Not a PLY file. Set it to LF and it'll be rejected later.
 	}
 }
