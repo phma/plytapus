@@ -506,6 +506,8 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 			castFunction(buffer, elementBuffer[i]);
 		}
 	}
+	if (fs.eof())
+	  throw std::runtime_error("End of file.");
 }
 
 ElementBuffer::ElementBuffer(const ElementDefinition& definition)
