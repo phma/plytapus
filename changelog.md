@@ -1,6 +1,7 @@
 # v0.6.0
 - Add a shared library.
 - Read and write big- and little-endian files.
+- Read files of any line ending convention (CR, LF, CRLF, or LFCR).
 - Copy test data to build directory (build directory does not have to be inside source directory).
 - Install header files and library.
 - Write an icosahedron.
