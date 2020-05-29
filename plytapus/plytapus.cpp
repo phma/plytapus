@@ -488,6 +488,10 @@ void FileParser::readBinaryElement(std::ifstream& fs, const ElementDefinition& e
 			readEndian(fs, buffer, size, format);
 			properties[i].castFunction(buffer, elementBuffer[i]);
 		}
+		if (elementBuffer.size()==0)
+		// A garbled number of elements, where the element has no properties,
+		// can result in the program taking a long time without reaching EOF.
+		  throw std::runtime_error("Empty element.");
 	}
 	else
 	{
