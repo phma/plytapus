@@ -9,9 +9,13 @@
 #include <memory>
 #include <functional>
 
+#include "config.h"
 #include "textio.h"
 
-#if defined(_MSC_VER) && defined(MSVC_FILENAME_16)
+#ifndef _MSC_VER
+    #undef MSVC_FILENAME_16
+#endif
+#ifdef MSVC_FILENAME_16
     #define PATH_STRING std::wstring
     #define Str(s) L##s
 #else

@@ -3,7 +3,6 @@
 #include <fstream>
 #include <string>
 #include <cfloat>
-#include "config.h"
 
 #ifdef BIGENDIAN
 #define NATIVE_ENDIAN BINARY_BIG_ENDIAN
