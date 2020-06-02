@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(TestBigEndian)
+include(GenerateExportHeader)
 
 option(MSVC_STATIC "Build static library in MSVC")
 set(MAKE_STATIC plytapus0)
