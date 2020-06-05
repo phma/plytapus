@@ -14,6 +14,11 @@
 namespace plytapus
 {
 
+std::string version()
+{
+  return VERSION;
+}
+
 std::string ldecimal(double x,double toler)
 {
   double x2;

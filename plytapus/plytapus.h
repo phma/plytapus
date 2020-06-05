@@ -50,6 +50,8 @@ namespace plytapus
 		//FLOAT64
 	};
 
+	std::string version();
+
 	class IScalarProperty
 	{
 	public:
