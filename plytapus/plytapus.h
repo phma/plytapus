@@ -51,6 +51,7 @@ namespace plytapus
 	};
 
 	std::string version();
+	int copyrightYear();
 
 	class IScalarProperty
 	{

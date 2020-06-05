@@ -19,6 +19,11 @@ std::string version()
   return VERSION;
 }
 
+int copyrightYear()
+{
+  return COPY_YEAR;
+}
+
 std::string ldecimal(double x,double toler)
 {
   double x2;

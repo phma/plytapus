@@ -3,4 +3,5 @@
 #cmakedefine BIGENDIAN
 #cmakedefine MSVC_FILENAME_16
 #define VERSION "@PLYTAPUS_VERSION@"
+#define COPY_YEAR @COPY_YEAR@
 #endif
