@@ -9,8 +9,13 @@
 #include <memory>
 #include <functional>
 
+#ifdef PLYTAPUS_BEING_BUILT
 #include "config.h"
 #include "textio.h"
+#else
+#include <plytapus/config.h>
+#include <plytapus/textio.h>
+#endif
 
 #ifndef _MSC_VER
     #undef MSVC_FILENAME_16

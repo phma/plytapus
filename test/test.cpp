@@ -1,5 +1,6 @@
 #include <iostream>
 
+#define PLYTAPUS_BEING_BUILT
 #include "plytapus.h"
 
 #define PHI 1.6180339887498948482

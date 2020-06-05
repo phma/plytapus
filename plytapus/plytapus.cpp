@@ -1,3 +1,4 @@
+#define PLYTAPUS_BEING_BUILT
 #include "plytapus_internal.h"
 
 #include <fstream>
