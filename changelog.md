@@ -1,4 +1,7 @@
-# v0.6.0
+# v0.6.0 (2020-06-10)
+- Add an option to build the shared library or the dynamic library on MSVC.
+- Add an option for filenames to be 16-bit (UTF-16) or 8-bit on MSVC.
+- Add functions to get the version and copyright year.
 - Add a shared library.
 - Read and write big- and little-endian files.
 - Read files of any line ending convention (CR, LF, CRLF, or LFCR).
