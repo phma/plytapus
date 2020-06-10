@@ -1,4 +1,5 @@
 # v0.6.0 (2020-06-10)
+- Add CPack.
 - Add an option to build the shared library or the dynamic library on MSVC.
 - Add an option for filenames to be 16-bit (UTF-16) or 8-bit on MSVC.
 - Add functions to get the version and copyright year.
